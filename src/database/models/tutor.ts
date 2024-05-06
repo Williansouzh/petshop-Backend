@@ -30,4 +30,4 @@ const schema = new mongoose.Schema<TutorModel>(
   }
 );
 
-export const Tutor: Model<TutorModel> = mongoose.model("User", schema);
+export const Tutor: Model<TutorModel> = mongoose.model("Tutor", schema); // Changed "User" to "Tutor"

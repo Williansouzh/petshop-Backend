@@ -5,6 +5,7 @@ import express, { Application } from "express";
 import bodyParser from "body-parser";
 import route from "./routes/tutor";
 import * as database from "./database/connection";
+import { errorMiddleware } from "./middlewares/errorHandler";
 dotenv.config();
 export class App {
   readonly app: Application;
@@ -34,6 +35,7 @@ export class App {
   }
   setupRoutes() {
     this.app.use(route);
+    this.app.use(errorMiddleware);
   }
   private async databaseSetup(): Promise<void> {
     await database.connect();

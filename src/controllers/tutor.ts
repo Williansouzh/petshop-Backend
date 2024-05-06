@@ -1,5 +1,6 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { TutorService } from "@src/services/tutor";
+import { Tutor } from "@src/database/models/tutor";
 
 export class TutorController {
   private tutorService: TutorService;
@@ -8,24 +9,73 @@ export class TutorController {
     this.tutorService = tutorService;
   }
 
-  public async getAll(req: Request, res: Response): Promise<void> {
+  public getAll = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const tutors = await this.tutorService.getAllUsers();
       res.json(tutors);
     } catch (error) {
-      res.status(500).json({ message: "Internal server error" });
+      next(error);
     }
-  }
+  };
 
-  public async create(req: Request, res: Response): Promise<void> {
-    // Implemente a lógica para criar um tutor aqui
-  }
+  public create = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const { name, email, password } = req.body;
+      const newTutor: Tutor = {
+        name,
+        email,
+        password,
+      };
+      const createdTutor = await this.tutorService.createUser(newTutor);
+      res.status(201).json(createdTutor);
+    } catch (error) {
+      next(error);
+    }
+  };
 
-  public async modify(req: Request, res: Response): Promise<void> {
-    // Implemente a lógica para modificar um tutor aqui
-  }
+  public update = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const { name, email, password } = req.body;
+      const id = req.params.id;
+      const updatedTutorData: Tutor = {
+        name,
+        email,
+        password,
+      };
+      const updatedTutor = await this.tutorService.updateUser(
+        id,
+        updatedTutorData
+      );
+      res.json(updatedTutor);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  };
 
-  public async delete(req: Request, res: Response): Promise<void> {
-    // Implemente a lógica para deletar um tutor aqui
-  }
+  public delete = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const { id } = req.body;
+      await this.tutorService.deleteUser(id);
+      res.sendStatus(204);
+    } catch (error) {
+      next(error);
+    }
+  };
 }

@@ -1,20 +1,28 @@
 // services/UserService.ts
-import { TutorModel } from "@src/database/models/tutor";
+import { Tutor, TutorModel } from "@src/database/models/tutor";
 import { TutorRepository } from "../repositories/TutorRepository";
+import { DuplicateEmailError } from "@src/helpers/api-errors";
 
 export class TutorService {
   private tutorRepository: TutorRepository;
 
-  constructor(userRepository: TutorRepository) {
-    this.tutorRepository = userRepository;
+  constructor(tutorRepository: TutorRepository) {
+    this.tutorRepository = tutorRepository;
   }
 
-  async createUser(userData: TutorModel): Promise<TutorModel> {
-    return this.tutorRepository.create(userData);
+  async duplicatedEmail(email: string): Promise<boolean> {
+    return this.tutorRepository.getByEmail(email);
   }
 
-  async getUserById(userId: string): Promise<TutorModel | null> {
-    return this.tutorRepository.getById(userId);
+  async createUser(tutorData: Tutor): Promise<TutorModel> {
+    if ((await this.duplicatedEmail(tutorData.email)) == false) {
+      throw new DuplicateEmailError(tutorData.email);
+    }
+    return this.tutorRepository.create(tutorData);
+  }
+
+  async getUserById(tutorId: string): Promise<TutorModel | null> {
+    return this.tutorRepository.getById(tutorId);
   }
 
   async getAllUsers(): Promise<TutorModel[]> {
@@ -22,13 +30,13 @@ export class TutorService {
   }
 
   async updateUser(
-    userId: string,
-    userData: TutorModel
+    tutorId: string,
+    tutorData: Tutor
   ): Promise<TutorModel | null> {
-    return this.tutorRepository.update(userId, userData);
+    return this.tutorRepository.update(tutorId, tutorData);
   }
 
-  async deleteUser(userId: string): Promise<boolean> {
-    return this.tutorRepository.delete(userId);
+  async deleteUser(tutorId: string): Promise<boolean> {
+    return this.tutorRepository.delete(tutorId);
   }
 }

@@ -12,4 +12,6 @@ const userController = new TutorController(userService);
 
 route.get("/tutors", userController.getAll.bind(userController));
 route.post("/tutors", userController.create.bind(userController));
+route.patch("/tutors/:id", userController.update.bind(userController));
+route.delete("/tutors/:id", userController.delete.bind(userController));
 export default route;
