@@ -37,6 +37,7 @@ export class TutorController {
       const createdTutor = await this.tutorService.createUser(newTutor);
       res.status(201).json(createdTutor);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   };
@@ -58,7 +59,7 @@ export class TutorController {
         id,
         updatedTutorData
       );
-      res.json(updatedTutor);
+      res.status(200).json(`Tutor updated: ${updatedTutor}`);
     } catch (error) {
       console.log(error);
       next(error);
@@ -71,9 +72,9 @@ export class TutorController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const { id } = req.body;
-      await this.tutorService.deleteUser(id);
-      res.sendStatus(204);
+      const { id } = req.params;
+      const deletedSUer = await this.tutorService.deleteUser(id);
+      res.status(200).json(`Tutor delted: ${deletedSUer}`);
     } catch (error) {
       next(error);
     }

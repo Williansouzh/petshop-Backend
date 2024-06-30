@@ -11,11 +11,12 @@ export class TutorService {
   }
 
   async duplicatedEmail(email: string): Promise<boolean> {
-    return this.tutorRepository.getByEmail(email);
+    const existingEmail = await this.tutorRepository.getByEmail(email);
+    return !!existingEmail;
   }
 
   async createUser(tutorData: Tutor): Promise<TutorModel> {
-    if ((await this.duplicatedEmail(tutorData.email)) == false) {
+    if (await this.duplicatedEmail(tutorData.email)) {
       throw new DuplicateEmailError(tutorData.email);
     }
     return this.tutorRepository.create(tutorData);

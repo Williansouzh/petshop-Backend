@@ -6,6 +6,8 @@ import bodyParser from "body-parser";
 import route from "./routes/tutor";
 import * as database from "./database/connection";
 import { errorMiddleware } from "./middlewares/errorHandler";
+import swaggerUi from "swagger-ui-express";
+import { specs } from "./helpers/swagger-setup";
 dotenv.config();
 export class App {
   readonly app: Application;
@@ -34,6 +36,7 @@ export class App {
     });
   }
   setupRoutes() {
+    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
     this.app.use(route);
     this.app.use(errorMiddleware);
   }
