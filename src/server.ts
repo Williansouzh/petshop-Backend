@@ -14,7 +14,7 @@ export class App {
   readonly port: string | number;
   constructor() {
     this.app = express();
-    this.port = process.env.PORT || 3333;
+    this.port = process.env.PORT || 3000;
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
   }

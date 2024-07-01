@@ -1,11 +1,10 @@
-import config, { IConfig } from "config";
 import { connect as mongooseConnect, connection } from "mongoose";
-
-const dbConfig: IConfig = config.get("App.database");
-
+import dotenv from "dotenv";
+dotenv.config();
+const MONGO_URL = process.env.MONGO_URL;
 export const connect = async (): Promise<void> => {
   try {
-    await mongooseConnect(dbConfig.get("mongoUrl"));
+    await mongooseConnect(MONGO_URL as string);
     console.log("Database connected.");
   } catch (error) {
     console.log(error);
